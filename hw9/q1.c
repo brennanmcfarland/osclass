@@ -5,6 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <omp.h>
+#include <sys/time.h>
 
 // Prototypes
 double shubert(double x1, double x2);
@@ -17,6 +18,9 @@ int main(int argc, char *argv[])
     return 1;
   }
   omp_set_num_threads(atoi(argv[1]));
+
+  struct timeval start_time, stop_time, elapsed_time;  // timers
+	gettimeofday(&start_time,NULL); // Unix timer
 
   double min = 0;
   double minx1 = -2.0;
@@ -37,13 +41,17 @@ int main(int argc, char *argv[])
       }
     }
     int tid = omp_get_thread_num();
-    if(tid == 0)
-      printf("Parent x1 = -2.0 to 0.0\n");
-    else
-      printf("Child x1 = 0.0 to 2.0\n");
+    //if(tid == 0)
+    //   printf("Parent x1 = -2.0 to 0.0\n");
+    // else
+    //   printf("Child x1 = 0.0 to 2.0\n");
   }
   printf("Global min: %.2f\n", min);
 
+  gettimeofday(&stop_time,NULL);
+	timersub(&stop_time, &start_time, &elapsed_time); // Unix time subtract routine
+	printf("Total time was %f seconds.\n", elapsed_time.tv_sec+elapsed_time.tv_usec/1000000.0);
+  
   return 0;
 }
 

@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <sys/time.h>
+
 
 // Prototypes
 double shubert(double x1, double x2);
@@ -23,6 +25,9 @@ int main(int argc, char *argv[])
     return 1;
   }
 
+  struct timeval start_time, stop_time, elapsed_time;  // timers
+	gettimeofday(&start_time,NULL); // Unix timer
+
   //initialize thread ids
   int num_threads = atoi(argv[1]);
   pthread_t tids[num_threads];
@@ -30,7 +35,6 @@ int main(int argc, char *argv[])
   for(threadnum = 0; threadnum < num_threads; threadnum++)
   {
     tids[num_threads] = 0;
-    fflush(stdout);
   }
 
   //initialize the semaphore
@@ -65,6 +69,11 @@ int main(int argc, char *argv[])
 
   printf("Global min: %.2f\n", min);
   sem_destroy(&sem); //destroy the semaphore
+
+  gettimeofday(&stop_time,NULL);
+	timersub(&stop_time, &start_time, &elapsed_time); // Unix time subtract routine
+	printf("Total time was %f seconds.\n", elapsed_time.tv_sec+elapsed_time.tv_usec/1000000.0);
+  
   return 0;
 }
 
@@ -105,6 +114,6 @@ void *child(double x1range[])
   double x1min = x1range[0];
   double x1max = x1range[1];
   shubert_local_minimum(x1min, x1max, -2, 2);
-  printf("Child x1 = %.1f to %.1f\n", x1min, x1max);
+  // printf("Child x1 = %.1f to %.1f\n", x1min, x1max);
   pthread_exit(0);
 }

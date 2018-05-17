@@ -34,8 +34,7 @@ int main()
   pthread_attr_init(&attr);
   pthread_create(&tid, &attr, producer, NULL);
   consumer();
-  //guaranteed both threads are done with the critical section at this point
-  //because when next == N both threads stop looping
+  pthread_join(tid, NULL);
   printf("\n");
 
   //destroy semaphores

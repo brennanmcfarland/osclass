@@ -109,9 +109,9 @@ void write_to_buffer(char *value)
   //manually printing char by char because it's a circular array
   for(i=0; i<STRING_SIZE; i++)
   {
-    //if it's the null terminator, break
     buffer[in] = value[i];
     in = (in+1)%BUFFER_SIZE;
+    //if it's the null terminator, break
     if(value[i] == '\0') { break; }
   }
   //increment version
